@@ -24,7 +24,11 @@ function scan(file, content) {
   lines.forEach((line, index) => {
     const location = `${file}:${index + 1}`;
     // Public deployment receipt hashes are not signing keys. Check named credentials separately.
-    const withoutPublicHashes = line.replace(
+    // A linked explorer transaction is public evidence, not a private-key literal.
+    const withoutTransactionLinks = line
+      .replace(/\[(0x[\da-f]{64})\]\(https:\/\/scan-testnet\.potos\.hk\/tx\/\1\)/gi, "[public transaction]")
+      .replace(/https:\/\/scan-testnet\.potos\.hk\/tx\/0x[\da-f]{64}(?![\da-f])/gi, "[public transaction URL]");
+    const withoutPublicHashes = withoutTransactionLinks.replace(
       /(?:\\?")(?:transactionHash|blockHash|txHash|keccak256)(?:\\?")\s*:\s*(?:\\?")0x[\da-f]{64}(?:\\?")/gi,
       "[public hash]",
     );
