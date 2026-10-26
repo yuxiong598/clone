@@ -31,3 +31,6 @@ artifacts/
 cache/
 typechain-types/
 .next/
+
+# Keep local assignment notes out of the shared repository.
+/docs/
