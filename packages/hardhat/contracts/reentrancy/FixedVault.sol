@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity >=0.8.0 <0.9.0;
 
 contract FixedVault {
     mapping(address => uint256) public balances;
@@ -11,7 +11,7 @@ contract FixedVault {
     function withdraw() public {
         uint256 amount = balances[msg.sender];
         require(amount > 0, "Vault: nothing to withdraw");
-        // Checks -> Effects -> Interactions: consume the claim before calling out.
+        // 修复：先清零状态，再转账（遵循 Checks-Effects-Interactions 原则）
         balances[msg.sender] = 0;
         (bool ok, ) = msg.sender.call{value: amount}("");
         require(ok, "Vault: send failed");

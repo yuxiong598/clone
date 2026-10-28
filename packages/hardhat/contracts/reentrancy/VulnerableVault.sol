@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity >=0.8.0 <0.9.0;
 
-/// @notice Intentionally vulnerable course exercise. Use only with test funds.
 contract VulnerableVault {
     mapping(address => uint256) public balances;
 
@@ -12,7 +11,7 @@ contract VulnerableVault {
     function withdraw() public {
         uint256 amount = balances[msg.sender];
         require(amount > 0, "Vault: nothing to withdraw");
-        // BUG: the receiver can call withdraw again before its balance is reset.
+        // 漏洞在这里：先转账，再修改状态
         (bool ok, ) = msg.sender.call{value: amount}("");
         require(ok, "Vault: send failed");
         balances[msg.sender] = 0;
